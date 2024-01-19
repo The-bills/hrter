@@ -1,6 +1,7 @@
 mod jobs;
 mod organisations;
 mod resume;
+mod submissions;
 
 use actix_web::{get, web, Responder, Scope};
 
@@ -15,4 +16,5 @@ pub fn service() -> Scope {
         .service(organisations::service())
         .service(jobs::service())
         .service(resume::service())
+        .service(submissions::service())
 }

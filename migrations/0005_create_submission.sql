@@ -1,0 +1,6 @@
+CREATE TABLE submissions (
+    id UUID PRIMARY KEY,
+    resume_id UUID NOT NULL REFERENCES resumes(id),
+    job_id UUID NOT NULL REFERENCES jobs(id),
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
