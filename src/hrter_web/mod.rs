@@ -12,7 +12,6 @@ pub async fn serve() -> std::io::Result<()> {
     dotenv().ok();
 
     let db_url = std::env::var("DATABASE_URL").unwrap();
-    dbg!(&db_url);
     let db_pool = PgPoolOptions::new()
         .max_connections(20)
         .connect(&db_url)
