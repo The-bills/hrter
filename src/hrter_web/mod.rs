@@ -1,0 +1,32 @@
+use actix_web::{web::Data, App, HttpServer};
+use dotenv::dotenv;
+use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
+mod api;
+
+pub type Db = Pool<Postgres>;
+pub struct AppState {
+    db: Db,
+}
+
+pub async fn serve() -> std::io::Result<()> {
+    dotenv().ok();
+
+    let db_url = std::env::var("DATABASE_URL").unwrap();
+    dbg!(&db_url);
+    let db_pool = PgPoolOptions::new()
+        .max_connections(20)
+        .connect(&db_url)
+        .await
+        .unwrap();
+
+    HttpServer::new(move || {
+        App::new()
+            .app_data(Data::new(AppState {
+                db: db_pool.clone(),
+            }))
+            .service(api::service())
+    })
+    .bind(("127.0.0.1", 8000))?
+    .run()
+    .await
+}
