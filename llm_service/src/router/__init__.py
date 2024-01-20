@@ -9,4 +9,4 @@ cors = CORS(app)
 # app.config['CORS_HEADERS'] = 'Content-Type'
 
 app.register_blueprint(summary_router.api, url_prefix='/summarize')
-# app.register_blueprint(score_router.api, url_prefix='/score')
+app.register_blueprint(score_router.api, url_prefix='/score')
