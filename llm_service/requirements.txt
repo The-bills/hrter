@@ -1,6 +1,6 @@
 langchain==0.0.240
 pytest==7.4.0
-python>=3.10.1
+python>=3.10.11
 scipy==1.11.1
 llama_index==0.8.21
 jsonpickle==3.0.2
@@ -8,3 +8,4 @@ langchain==0.0.284
 chromadb==0.4.9
 sentence-transformers==2.2.2
 tiktoken==0.5.1
+flask==2.0.2

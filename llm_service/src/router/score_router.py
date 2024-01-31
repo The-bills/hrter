@@ -28,6 +28,4 @@ def summarize_job():
         return 'Invalid body'
     prompt = prompts.score_position_prompt(json["content"])
     res = llm.complete(prompt).text
-    # return jsonpickle.encode(res, unpicklable=False)
-    # set response type to json
     return res

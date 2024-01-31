@@ -29,5 +29,3 @@ def summarize_job():
     prompt = prompts.summarize_position_prompt(json["content"])
     res = llm.complete(prompt).text
     return jsonpickle.encode(res, unpicklable=False)
-
-

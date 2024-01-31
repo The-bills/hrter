@@ -73,3 +73,22 @@ Example:
 Ensure that the ratings are objective and reflect the skill actually required for this position.
 Do not attach full job offer on response, only object mentioned above. Do not returin enything but the json object
 """
+
+def get_position_summarize_query(text: str):
+    return f"""
+    Which of the candidates will be the best for the job offer presented below? Match the CV to the job offer, based on the given informations in the position summary and answer the following question:
+    Which candidate is the best fit for the given position?
+    Return an array of the names of potential candidates with a short reason why.
+    Example response:
+    ```
+    [
+      {{name: "First Candidate", reason: "Some reason"}},
+      {{name: "Second Candidate", reason: "Some other reason"}},
+    ]
+    ```
+
+    Position summary:
+    ```
+    {text}
+    ```
+"""
