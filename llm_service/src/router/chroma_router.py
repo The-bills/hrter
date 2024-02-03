@@ -19,8 +19,9 @@ def insert_resume(job_doc_id):
         scores = request.json["scores"]
         if not content:
             return 'Invalid body'
+        print(LlamaIndex().get_all())
         doc = chroma_insert(type="cv",
-                            score=scores,
+                            score_dict=scores,
                             content=content)
         resume_doc_id = doc.doc_id
         job_offer = ChromaStore().collection.get(where={'doc_id': job_doc_id}, include=['embeddings'])['embeddings'][0]
@@ -47,6 +48,14 @@ def insert_job():
 def match_precise(job_doc_id):
     position = ChromaStore().collection.get(where={'doc_id': job_doc_id}, include=['documents'])
     job_offer = position['documents'][0]
-    print(job_offer)
     res = LlamaIndex().match_precise(job_offer).response
     return Response(res, mimetype='application/json')
+
+
+    # "scores": {
+    #     "English": 5,
+    #     "Fastlane": 0,
+    #     "Figma": 0,
+    #     "Firebase": 3,
+    #     "Polish": 10
+    # } [{"e": 2}, {"b": 3}]

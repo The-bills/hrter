@@ -41,7 +41,7 @@ Example:
 }}
 
 Ensure that the ratings are objective and reflect the candidate's actual competencies as evident from their resume.
-Do not attach full resume on response, only object mentioned above
+Attach only an scoring ratings in json format from example below.
 """
 
 def score_position_prompt(text: str):

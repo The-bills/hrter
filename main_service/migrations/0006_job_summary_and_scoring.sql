@@ -1,0 +1,5 @@
+ALTER TABLE jobs
+ADD COLUMN summary TEXT;
+
+ALTER TABLE jobs
+ADD COLUMN scores JSON;

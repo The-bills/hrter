@@ -5,8 +5,8 @@ use actix_web::{get, web, HttpResponse, Responder, Scope};
 use uuid::Uuid;
 
 #[get("/")]
-pub async fn get_all(data: Data<AppState>) -> impl Responder {
-    HttpResponse::Ok().json(repo::all(&data.db).await)
+pub async fn get_all(data: Data<AppState>, job_id: Path<Uuid>) -> impl Responder {
+    HttpResponse::Ok().json(repo::all(&data.db, job_id.into_inner()).await)
 }
 
 #[get("/{id}")]
@@ -15,5 +15,7 @@ pub async fn get_one(data: Data<AppState>, id: Path<Uuid>) -> impl Responder {
 }
 
 pub fn service() -> Scope {
-    web::scope("/submissions").service(get_all).service(get_one)
+    web::scope("/{job_id}/submissions")
+        .service(get_all)
+        .service(get_one)
 }

@@ -1,4 +1,4 @@
-use super::job::Job;
+use super::Job;
 use crate::Db;
 use uuid::Uuid;
 
@@ -14,4 +14,16 @@ pub async fn one(db: &Db, id: Uuid) -> Option<Job> {
         .fetch_one(db)
         .await
         .ok()
+}
+
+pub async fn udpate_summary(db: &Db, id: Uuid, summary: Option<String>) -> Result<Job, ()> {
+    sqlx::query_as!(
+        Job,
+        "update jobs set summary = $1 where id = $2 returning *",
+        summary,
+        id
+    )
+    .fetch_one(db)
+    .await
+    .map_err(|_| ())
 }

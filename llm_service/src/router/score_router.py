@@ -1,7 +1,8 @@
 import jsonpickle
-from flask import Blueprint, request
+from flask import Blueprint, request, Response
 import utils.prompts as prompts
 from llama_index.llms import OpenAI
+
 
 api = Blueprint('cv_api', __name__)
 llm = OpenAI(model="gpt-4-1106-preview", temperature=0.0, max_tokens=4096, max_retries=5)
@@ -15,8 +16,8 @@ def summarize_resume():
     if(json['content'] is None):
         return 'Invalid body'
     prompt = prompts.score_cv_prompt(json['content'])
-    res = llm.complete(prompt).text
-    return jsonpickle.encode(res, unpicklable=False)
+    res = llm.complete(prompt).text.replace("```json", "").replace("```", "")
+    return Response(res, mimetype='application/json')
 
 @api.route("/job", methods=['POST'])
 def summarize_job():
@@ -28,4 +29,4 @@ def summarize_job():
         return 'Invalid body'
     prompt = prompts.score_position_prompt(json["content"])
     res = llm.complete(prompt).text
-    return res
+    return Response(res, mimetype='application/json')

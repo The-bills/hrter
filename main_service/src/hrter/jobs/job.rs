@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use sqlx::FromRow;
 use uuid::Uuid;
 
@@ -10,4 +11,6 @@ pub struct Job {
     pub description: String,
     pub created_at: DateTime<Utc>,
     pub organisation_id: Uuid,
+    pub summary: Option<String>,
+    pub scores: Option<Value>,
 }

@@ -3,6 +3,8 @@ use dotenv::dotenv;
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 mod api;
 
+use actix_cors::Cors;
+
 pub type Db = Pool<Postgres>;
 pub struct AppState {
     db: Db,
@@ -17,12 +19,14 @@ pub async fn serve() -> std::io::Result<()> {
         .connect(&db_url)
         .await
         .unwrap();
-
     HttpServer::new(move || {
+        let cors = Cors::permissive();
+
         App::new()
             .app_data(Data::new(AppState {
                 db: db_pool.clone(),
             }))
+            .wrap(cors)
             .service(api::service())
     })
     .bind(("127.0.0.1", 8000))?

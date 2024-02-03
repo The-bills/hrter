@@ -1,6 +1,13 @@
 mod hrter;
 mod hrter_web;
 
+#[derive(Debug)]
+pub enum Error {
+    LLMServiceError(&'static str),
+    ParsingError(&'static str),
+    DbError,
+}
+
 use dotenv::dotenv;
 pub type Db = hrter_web::Db;
 

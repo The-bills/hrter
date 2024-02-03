@@ -9,4 +9,5 @@ pub struct Submission {
     pub created_at: DateTime<Utc>,
     pub resume_id: Uuid,
     pub job_id: Uuid,
+    pub chroma_distance: Option<f64>,
 }

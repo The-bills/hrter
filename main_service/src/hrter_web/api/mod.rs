@@ -1,9 +1,8 @@
 mod jobs;
 mod organisations;
 mod resume;
-mod submissions;
 
-use actix_web::{get, web, HttpResponse, Responder, Scope};
+use actix_web::{get, web, Responder, Scope};
 
 #[get("/status")]
 pub async fn status_check() -> impl Responder {
@@ -16,5 +15,4 @@ pub fn service() -> Scope {
         .service(organisations::service())
         .service(jobs::service())
         .service(resume::service())
-        .service(submissions::service())
 }

@@ -1,9 +1,10 @@
-pub mod job;
+mod job;
 pub mod repo;
 pub mod score;
 pub mod summary;
 
 use crate::Db;
+pub use job::Job;
 use uuid::Uuid;
 
 pub async fn get_summary(db: &Db, id: Uuid) -> Result<String, ()> {
