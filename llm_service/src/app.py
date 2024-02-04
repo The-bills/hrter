@@ -5,4 +5,4 @@ _ = load_dotenv(find_dotenv())
 from router import app
 
 if __name__ == '__main__':
-   app.run(debug = True, port=8001)
+   app.run(debug = True, port=8001, host='0.0.0.0')

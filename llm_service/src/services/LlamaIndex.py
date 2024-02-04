@@ -29,6 +29,7 @@ class LlamaIndex:
             cls.embed_model = LangchainEmbedding(
                 HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2"),
             )
+            
             #ServiceContext/VectorStore
             cls.service_context = ServiceContext.from_defaults(
                 embed_model=cls.embed_model)
@@ -47,7 +48,6 @@ class LlamaIndex:
             index=self.index,
             similarity_top_k=20
         )
-        print(self.index)
         query_engine = RetrieverQueryEngine(
             retriever=retriever,
         )
