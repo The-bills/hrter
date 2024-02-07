@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use uuid::Uuid;
 use super::submissions;
+use std::env::var;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct InsertResponse {
@@ -24,11 +25,7 @@ pub async fn insert_summary_to_llm(
         "scores": scores
     });
     reqwest::Client::new()
-        .post(
-            "http://localhost:8001/chroma/jobs/".to_owned()
-                + "1da3f2fb-2973-4e6e-837c-678080035046"
-                + "/resume",
-        )
+        .post(var("LLM_SERVICE_URL").expect("LLM_SERVICE_URL env not provided") + "/chroma/jobs" + "/1da3f2fb-2973-4e6e-837c-678080035046" + "/resume")
         .json(&body)
         .send()
         .await

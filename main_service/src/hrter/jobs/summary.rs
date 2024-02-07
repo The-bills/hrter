@@ -2,13 +2,14 @@ use super::{repo, Job};
 use crate::Db;
 use serde_json::json;
 use uuid::Uuid;
+use std::env::var;
 
 pub async fn get_summary(content: &String) -> Result<String, ()> {
     let body = json!({
         "content": content,
     });
     reqwest::Client::new()
-        .post("http://127.0.0.1:8001/summarize/job")
+        .post(var("LLM_SERVICE_URL").expect("LLM_SERVICE_URL env not provided") + "/summarize/job")
         .json(&body)
         .send()
         .await

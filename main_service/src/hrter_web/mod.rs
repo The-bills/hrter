@@ -12,6 +12,7 @@ pub struct AppState {
 
 pub async fn serve() -> std::io::Result<()> {
     dotenv().ok();
+    print!("Starting server");
 
     let db_url = std::env::var("DATABASE_URL").unwrap();
     let db_pool = PgPoolOptions::new()
@@ -29,7 +30,7 @@ pub async fn serve() -> std::io::Result<()> {
             .wrap(cors)
             .service(api::service())
     })
-    .bind(("127.0.0.1", 8000))?
+    .bind(("0.0.0.0", 8000))?
     .run()
     .await
 }

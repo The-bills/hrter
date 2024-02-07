@@ -1,5 +1,6 @@
 use serde_json::json;
 use serde_json::Value;
+use std::env::var;
 
 use crate::Error;
 
@@ -10,7 +11,7 @@ pub async fn get_score(content: &String) -> Result<ScoreResponse, Error> {
         "content": content,
     });
     reqwest::Client::new()
-        .post("http://127.0.0.1:8001/score/resume")
+        .post(var("LLM_SERVICE_URL").expect("LLM_SERVICE_URL env not provided") + "/score/resume")
         .json(&body)
         .send()
         .await

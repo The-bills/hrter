@@ -1,0 +1,32 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "select * from organisations",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "493713bbe1699c36d52f1777b2e8e13d7f52bb7fe464c3ea8aa94f25c9bd2157"
+}
