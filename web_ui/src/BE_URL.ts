@@ -1,1 +1,1 @@
-export default process.env.REACT_BE_URL
+export default process.env.REACT_APP_BE_URL
