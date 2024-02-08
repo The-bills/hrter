@@ -3,13 +3,16 @@ version: '3'
 services:
   llm-service:
     build:
-      context: ./main_service
+      context: ./llm_service
     ports:
       - "8001:8001"
     networks:
       - app-network
     depends_on:
       - postgres
+    environment:
+      - OPENAI_API_KEY=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
+      - FOLDER_PATH=cv
 
   main-service:
     build:
@@ -22,16 +25,15 @@ services:
       - postgres
       - llm-service
     environment:
-      DATABASE_URL: postgres://postgres:postgres@postgres-1:5432/hrter 
-      LLM_SERVICE_URL: http://hrter-llm-service-1:8001
+      - DATABASE_URL=postgres://postgres:postgres@hrter-postgres-1:5432/hrter 
+      - LLM_SERVICE_URL=http://hrter-llm-service-1:8001
 
   postgres:
     image: postgres:14
-    hostname: postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: hrter
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=hrter
     ports:
       - "5434:5432"
     volumes:
