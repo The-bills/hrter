@@ -11,7 +11,7 @@ services:
     depends_on:
       - postgres
     environment:
-      - OPENAI_API_KEY=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
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
       - FOLDER_PATH=cv
 
   main-service:
@@ -25,8 +25,8 @@ services:
       - postgres
       - llm-service
     environment:
-      - DATABASE_URL=postgres://postgres:postgres@hrter-postgres-1:5432/hrter 
-      - LLM_SERVICE_URL=http://hrter-llm-service-1:8001
+      - DATABASE_URL=${DATABASE_URL}
+      - LLM_SERVICE_URL=${LLM_SERVICE_URL}
 
   postgres:
     image: postgres:14
@@ -48,3 +48,4 @@ networks:
 
 volumes:
   postgres-data:
+
