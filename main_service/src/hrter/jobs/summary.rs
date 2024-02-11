@@ -1,8 +1,8 @@
 use super::{repo, Job};
 use crate::Db;
 use serde_json::json;
-use uuid::Uuid;
 use std::env::var;
+use uuid::Uuid;
 
 pub async fn get_summary(content: &String) -> Result<String, ()> {
     let body = json!({

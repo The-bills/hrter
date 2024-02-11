@@ -1,32 +1,63 @@
 use crate::hrter::resumes::{self, repo};
-use crate::hrter_web::{AppState, Data};
+use crate::processing_queue::{self, ProcessingEvent};
+use actix_multipart::form::{tempfile::TempFile, text::Text, MultipartForm};
 use actix_web::web::Path;
 use actix_web::{get, post, web, HttpResponse, Responder, Scope};
 use uuid::Uuid;
-use actix_multipart::form::{tempfile::TempFile, text::Text, MultipartForm};
 
 #[get("/")]
-pub async fn get_all(data: Data<AppState>) -> impl Responder {
-    HttpResponse::Ok().json(repo::all(&data.db).await)
+pub async fn get_all() -> impl Responder {
+    HttpResponse::Ok().json(repo::all().await)
 }
 
 #[get("/{id}")]
-pub async fn get_one(data: Data<AppState>, id: Path<Uuid>) -> impl Responder {
-    HttpResponse::Ok().json(repo::one(&data.db, id.into_inner()).await)
+pub async fn get_one(id: Path<Uuid>) -> impl Responder {
+    HttpResponse::Ok().json(repo::one(id.into_inner()).await)
+}
+
+#[post("/{id}/scores/retry")]
+pub async fn retry_scores(id: Path<Uuid>) -> impl Responder {
+    match resumes::process_scores(id.into_inner()).await {
+        Ok(resume) => HttpResponse::Ok().json(resume),
+        Err(_) => HttpResponse::InternalServerError().finish(),
+    }
+}
+
+#[post("/{id}/summary/retry")]
+pub async fn retry_summary(id: Path<Uuid>) -> impl Responder {
+    match resumes::process_summary(id.into_inner()).await {
+        Ok(resume) => HttpResponse::Ok().json(resume),
+        Err(_) => HttpResponse::InternalServerError().finish(),
+    }
+}
+
+#[get("/{id}/summary/status")]
+pub async fn summary_status(id_path: Path<Uuid>) -> impl Responder {
+    let id = id_path.into_inner();
+    match processing_queue::check(ProcessingEvent::ResumeSummary(id)) {
+        Some(_) => HttpResponse::Ok().json(true),
+        None => HttpResponse::Ok().json(false),
+    }
+}
+
+#[get("/{id}/scores/status")]
+pub async fn scores_status(id_path: Path<Uuid>) -> impl Responder {
+    let id = id_path.into_inner();
+    match processing_queue::check(ProcessingEvent::ResumeSummary(id)) {
+        Some(_) => HttpResponse::Ok().json(true),
+        None => HttpResponse::Ok().json(false),
+    }
 }
 
 #[derive(MultipartForm, Debug)]
 pub struct PostResumeForm {
     file: TempFile,
-    name: Text<String>
+    name: Text<String>,
 }
 
 #[post("/")]
-pub async fn insert(MultipartForm(form): MultipartForm<PostResumeForm>, data: Data<AppState>) -> impl Responder {
+pub async fn insert(MultipartForm(form): MultipartForm<PostResumeForm>) -> impl Responder {
     const MAX_FILE_SIZE: usize = 1024 * 1024 * 10;
-
-    // let namespace = form.name.into_inner();
-    // let file = form.file;
 
     match form.file.size {
         0 => return HttpResponse::BadRequest().finish(),
@@ -37,11 +68,10 @@ pub async fn insert(MultipartForm(form): MultipartForm<PostResumeForm>, data: Da
     let temp_file_path = form.file.file.path();
     let txt: String = pdf_extract::extract_text(&temp_file_path).unwrap();
 
-    match resumes::insert(
-        &data.db,
+    match resumes::process(
         txt,
         Uuid::parse_str("13868a7c-00e9-4e21-960e-5c14b1045d12").unwrap(),
-        form.name.into_inner()
+        form.name.into_inner(),
     )
     .await
     {
@@ -58,4 +88,8 @@ pub fn service() -> Scope {
         .service(get_all)
         .service(get_one)
         .service(insert)
+        .service(retry_summary)
+        .service(retry_scores)
+        .service(summary_status)
+        .service(scores_status)
 }

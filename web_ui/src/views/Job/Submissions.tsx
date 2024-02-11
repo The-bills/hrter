@@ -13,20 +13,28 @@ type Props = {
 };
 export const Submissions = (p: Props) => {
   const [selectedTab, setSelectedTab] = useState(0);
-  const { data } = useSubmissionListQuery(p.jobId);
+  const { data: recomendedData } = useSubmissionListQuery(p.jobId);
+
+  const data = recomendedData
 
   return (
-    <div className="bg-slate-100 rounded-md max-h-full flex flex-col overflow-hidden">
-      <div className="flex gap-10 border-b-2">
+    <div className="rounded-md max-h-full flex flex-col overflow-hidden">
+      <div className=" bg-slate-100 flex gap-10 border-b-2">
         <h1 className={`font-bold cursor-pointer p-4 underline-offset-4 ${selectedTab === 0 && 'underline'}`} onClick={()=> setSelectedTab(0)}>Active</h1>
         <h1 className={`font-bold cursor-pointer p-4 underline-offset-4 ${selectedTab === 1 && 'underline'}`} onClick={()=> setSelectedTab(1)}>Recomended</h1>
         <h1 className={`font-bold cursor-pointer p-4 underline-offset-4 ${selectedTab === 2 && 'underline'}`} onClick={()=> setSelectedTab(2)}>All</h1>
       </div>
-      <div className="flex-1 overflow-y-scroll">
+      <table className="bg-slate-100 flex-1 overflow-y-scroll mt-4">
+        <tr className="border-b-2 pb-3 p-3">
+          <th>Name</th>
+          <th>Score</th>
+          <th>Added</th>
+          <th>Status</th>
+          </tr>
       {data?.map((submission) => (
         <Row {...submission} />
       ))}
-      </div>
+      </table>
     </div>
   );
 };
@@ -36,12 +44,13 @@ type RowProps = Submission;
 const Row = (p: RowProps) => {
   const {data} = useResumeQuery(p.resume_id)
   return (
-    <div className="grid rows-2 border-b-2 pb-3 p-3">
-      <div className="text-base font-semibold pb-1">{data?.name}</div>
-      <div className="text-sm text-slate-700 pb-1">Score: {Math.round(p.chroma_distance*10)}</div>
-      <div className="text-sm text-slate-700">
+    <tr className="border-b-2 pb-3 p-3">
+      <td className="text-base font-semibold pb-1">{data?.name}</td>
+      <td className="text-sm text-slate-700 pb-1">{Math.round(p.chroma_distance*10)}</td>
+      <td className="text-sm text-slate-700">
         {formatDate(new Date(p.created_at))}
-      </div>
-    </div>
+      </td>
+      <td className="text-sm text-slate-700 pb-1">Pending</td>
+    </tr>
   );
 };

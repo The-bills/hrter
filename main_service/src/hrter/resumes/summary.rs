@@ -7,9 +7,14 @@ pub async fn get_summary(content: &String) -> Result<String, Error> {
         "content": content,
     });
     reqwest::Client::new()
-        .post(var("LLM_SERVICE_URL").expect("LLM_SERVICE_URL env not provided") + "/summarize/resume")
+        .post(
+            var("LLM_SERVICE_URL").expect("LLM_SERVICE_URL env not provided") + "/summarize/resume",
+        )
         .json(&body)
         .send()
         .await
-        .map_err(|_| Error::LLMServiceError("summarize_resume"))?.text().await.map_err(|_| Error::ParsingError("summarize_resume"))
+        .map_err(|_| Error::LLMServiceError("summarize_resume"))?
+        .text()
+        .await
+        .map_err(|_| Error::ParsingError("summarize_resume"))
 }
