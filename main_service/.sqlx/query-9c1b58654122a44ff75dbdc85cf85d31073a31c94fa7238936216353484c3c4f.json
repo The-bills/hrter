@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "select * from submissions where job_id = $1",
+  "query": "select * from submissions where job_id = $1 order by chroma_distance desc",
   "describe": {
     "columns": [
       {
@@ -42,5 +42,5 @@
       true
     ]
   },
-  "hash": "dc49b3981b4192abdca20e6913bac753bbacdce76f78f083cb122836bca1ba50"
+  "hash": "9c1b58654122a44ff75dbdc85cf85d31073a31c94fa7238936216353484c3c4f"
 }

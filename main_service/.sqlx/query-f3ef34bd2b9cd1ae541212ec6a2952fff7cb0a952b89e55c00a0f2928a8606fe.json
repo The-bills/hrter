@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "select * from resumes",
+  "query": "select * from resumes order by created_at desc",
   "describe": {
     "columns": [
       {
@@ -52,5 +52,5 @@
       true
     ]
   },
-  "hash": "5786d42a52488a25742c25915e9888be956415162e412515944094c1b60cd4b2"
+  "hash": "f3ef34bd2b9cd1ae541212ec6a2952fff7cb0a952b89e55c00a0f2928a8606fe"
 }
