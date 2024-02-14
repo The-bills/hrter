@@ -4,13 +4,12 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { useJobQuery } from "../../queries/useJobQuery"
 import { formatDate } from "../../utils/date"
 import { Submissions } from "./Submissions"
+import { ScoresTable } from "../../components/ScoresTable"
 
 export const Job = () => {
     const { jobId } = useParams()
     const {data} = useJobQuery(jobId ?? '')
     const navigate = useNavigate()
-
-    const scores = Object.keys(data?.scores ?? {}).map((key) => [key, data!.scores![key]])
 
     const handleNavigateNew = () => navigate(`/resumes/new`)
 
@@ -25,13 +24,10 @@ export const Job = () => {
             <div className="grid grid-cols-3 gap-8 mb-8">
                 <div className="col-span-2 bg-slate-100 rounded-md p-5">
                     <div className='font-bold mb-2'>Summary</div>
-                    <div className='mb-4'>{data?.summary}</div>
+                    <div className='mb-4 text-justify'>{data?.summary}</div>
                 </div>
                 <div className="bg-slate-100 rounded-md p-5">
-                    <div className='font-bold mb-2'>Scoring</div>
-                    <div className='mb-4'>{scores.map(([key, value]) => (
-                        <div>{'-'}{key}: {value}</div>
-                    ))}</div>
+                <ScoresTable data={data?.scores} />
                 </div>
             </div>
 
