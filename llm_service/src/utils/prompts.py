@@ -15,33 +15,21 @@ The resume document:
 """
 
 def score_cv_prompt(text: str):
-    return f""""
-Carefully review the candidate's resume and identify all listed skills. For each skill, based on the commercial  information provided in the resume assign a rating on a scale from 0 to 10. Score should be based on overall practice time.
-Examples:
-scores from 0 to 2 shold be given if the candidate has no cpommercial experience in the given skill
-scores from 3 to 5 should be given if the candidate has 1-5 years of commercial experience in the given skill
-scores from 6 to 8 should be given if the candidate has 6-10 years of commercial experience in the given skill
-scores from 9 to 10 should be given if the candidate has 10+ years of commercial experience in the given skill
+  return f"""
+Carefully review the candidate's resume and identify all listed skills. For each skill, based on the commercial information provided in the resume, assign a rating on a scale from 0 to 10. The score should be based on the overall practice time.
+- Scores from 0 to 2 should be given if the candidate has no commercial experience in the given skill.
+- Scores from 3 to 5 should be given if the candidate has 1-5 years of commercial experience in the given skill.
+- Scores from 6 to 8 should be given if the candidate has 6-10 years of commercial experience in the given skill.
+- Scores from 9 to 10 should be given if the candidate has more than 10 years of commercial experience in the given skill.
 
-Create an object in JSON format where the key is the skill name and the value is the assigned rating. Example of the object:
-On completion, format the extracted data into a JSON object.
-CV Content:
+Example of how to format the extracted data into a JSON object:
+'{{"Python Programming": 8, "Project Management": 7, "Customer Service": 5, "Digital Marketing": 6, "Data Analysis": 7}}'
+
+Cv content:
 ```
 {text}
 ```
-
-Example:
-{{
-  "Python Programming": 8,
-  "Project Management": 7,
-  "Customer Service": 5,
-  "Digital Marketing": 6,
-  "Data Analysis": 7,
-  "// Add more skills and their ratings"
-}}
-
-Ensure that the ratings are objective and reflect the candidate's actual competencies as evident from their resume.
-Attach only an scoring ratings in json format from example below.
+Note: Ensure that the ratings are objective and reflect the candidate's actual competencies as evident from their resume. Attach only the scoring ratings in the JSON format as shown above.
 """
 
 def score_position_prompt(text: str):
@@ -53,25 +41,15 @@ scores from 3 to 5 should be given if the job offer has 1-5 years of commercial 
 scores from 6 to 8 should be given if the job offer has 6-10 years of commercial experience in the given skill
 scores from 9 to 10 should be given if the job offer has 10+ years of commercial experience in the given skill
 
-Create an object in JSON format where the key is the skill name and the value is the assigned rating. Example of the object:
-On completion, format the extracted data into a JSON object.
-CV Content:
+Example of how to format the extracted data into a JSON object:
+'{{"Python Programming": 8, "Project Management": 7, "Customer Service": 5, "Digital Marketing": 6, "Data Analysis": 7}}'
+
+Cv content:
 ```
 {text}
 ```
 
-Example:
-{{
-  "Python Programming": 8,
-  "Project Management": 7,
-  "Customer Service": 5,
-  "Digital Marketing": 6,
-  "Data Analysis": 7,
-  "// Add more skills and their ratings"
-}}
-
-Ensure that the ratings are objective and reflect the skill actually required for this position.
-Do not attach full job offer on response, only object mentioned above. Do not returin enything but the json object
+Note: Ensure that the ratings are objective and reflect the candidate's actual competencies as evident from their resume. Attach only the scoring ratings in the JSON format as shown above.
 """
 
 def get_position_summarize_query(text: str):

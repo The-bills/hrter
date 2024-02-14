@@ -1,6 +1,7 @@
-import jsonpickle
 from flask import Blueprint, request, Response
 import utils.prompts as prompts
+from services.TokenCounter import TokenCounter
+from utils.helpers import set_proper_score_format
 from llama_index.llms import OpenAI
 
 
@@ -16,7 +17,10 @@ def summarize_resume():
     if(json['content'] is None):
         return 'Invalid body'
     prompt = prompts.score_cv_prompt(json['content'])
-    res = llm.complete(prompt).text.replace("```json", "").replace("```", "")
+    TokenCounter().count_tokens(prompt)
+    llm_res = llm.complete(prompt).text
+    res = set_proper_score_format(llm_res)
+    res.replace("```json", "").replace("```", "")
     return Response(res, mimetype='application/json')
 
 @api.route("/job", methods=['POST'])
@@ -28,5 +32,8 @@ def summarize_job():
     if(json["content"] is None):
         return 'Invalid body'
     prompt = prompts.score_position_prompt(json["content"])
-    res = llm.complete(prompt).text
+    TokenCounter().count_tokens(prompt)
+    llm_res = llm.complete(prompt).text
+    res = set_proper_score_format(llm_res)
+    res.replace("```json", "").replace("```", "")
     return Response(res, mimetype='application/json')

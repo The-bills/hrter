@@ -1,5 +1,5 @@
 from flask import Flask
-from router import score_router, summary_router, chroma_router
+from router import score_router, summary_router, chroma_router, token_router
 
 app = Flask("app")
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -11,3 +11,4 @@ cors = CORS(app)
 app.register_blueprint(summary_router.api, url_prefix='/summarize')
 app.register_blueprint(score_router.api, url_prefix='/score')
 app.register_blueprint(chroma_router.api, url_prefix='/chroma')
+app.register_blueprint(token_router.api, url_prefix='/tokens')

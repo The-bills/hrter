@@ -8,8 +8,10 @@ from llama_index.schema import Document
 from utils.prompts import *
 from utils.prompts import get_position_summarize_query
 from services.ChromaStore import ChromaStore
-from dotenv import load_dotenv, find_dotenv
+import tiktoken
 from llama_index.retrievers import VectorIndexRetriever
+from llama_index.callbacks import CallbackManager, TokenCountingHandler
+from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
     
@@ -27,14 +29,23 @@ class LlamaIndex:
 
             # Embedding
             cls.embed_model = LangchainEmbedding(
-                HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2"),
+                HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
             )
+
+            # TokenCounter
+            cls.token_counter = TokenCountingHandler(
+            tokenizer=tiktoken.encoding_for_model(
+                "gpt-4-1106-preview").encode
+            )
+            cls.callback_manager = CallbackManager([cls.token_counter])
             
             #ServiceContext/VectorStore
             cls.service_context = ServiceContext.from_defaults(
-                embed_model=cls.embed_model)
-            cls.index = VectorStoreIndex.from_vector_store(vector_store=cls.vector_store,
-                                                            service_context=cls.service_context)
+                embed_model=cls.embed_model,
+                callback_manager=cls.callback_manager)
+            cls.index = VectorStoreIndex.from_vector_store(
+                vector_store=cls.vector_store,
+                service_context=cls.service_context)
         return cls._instance
     
     def insert(self, document: Document):
@@ -54,3 +65,12 @@ class LlamaIndex:
         query = get_position_summarize_query(position)
         res = query_engine.query(query)
         return res
+
+    def count_embed_tokens_used(self):
+        all_tokens = self.token_counter.total_embedding_token_count
+        return all_tokens
+    
+    def count_prompt_tokens_used(self):
+        all_tokens = self.token_counter.total_llm_token_count
+        return all_tokens
+    
