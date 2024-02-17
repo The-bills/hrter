@@ -16,6 +16,7 @@ export const JobRecommended = () => {
   const { data } = useJobQuery(jobId ?? "");
   const { data: recommended } = useGetRecommended(jobId ?? "");
   const temp = useGenerateRecommended();
+  const buttonStyles = "bg-slate-700 text-slate-100 rounded-md py-1 px-2";
   const handleGenerate = () => {
     if (!jobId) return;
     temp.mutate({ jobId });
@@ -23,15 +24,12 @@ export const JobRecommended = () => {
 
   return (
     <JobPageWithNavbar className="flex flex-col max-h-screen">
-      <div className="bg-slate-100 p-5 mb-8 rounded-md">
+      <div className="bg-slate-100 p-5 mb-8 rounded-md flex">
         <h1 className="text-3xl font-semibold">Recommendations</h1>
+        <button className={buttonStyles + " ml-auto"} onClick={handleGenerate}>
+          Generate
+        </button>
       </div>
-      <button
-        onClick={handleGenerate}
-        className="bg-slate-100 p-2 rounded-md mb-4"
-      >
-        generate
-      </button>
       <div className="bg-slate-100 rounded-md flex">
         <table className="flex-1 overflow-y-scroll px-4">
           <tr className="border-b-2">

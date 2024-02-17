@@ -8,13 +8,17 @@ export const JobResumes = () => {
   const navigate = useNavigate();
   const buttonStyles = "bg-slate-700 text-slate-100 rounded-md py-1 px-2";
 
+  const handleNavigateNew = () => {
+    navigate(`/resumes/new?jobId=${jobId}`);
+  }
+
   return (
     <JobPageWithNavbar className="flex flex-col max-h-screen">
       <div className="bg-slate-100 p-5 mb-8 rounded-md flex">
         <h1 className="text-3xl font-semibold">Submitted resumes</h1>
         <button
           className={buttonStyles + " ml-auto"}
-          onClick={() => navigate("/resumes/new")}
+          onClick={handleNavigateNew}
         >
           Add Resume
         </button>

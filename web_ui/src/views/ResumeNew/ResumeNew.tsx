@@ -3,17 +3,20 @@ import { TextInput } from "../../components/Input";
 import { useState } from "react";
 import { FileDrop } from "../../components/FileDrop";
 import { useUploadResume } from "../../queries/useUploadResume";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 export const ResumeNew = () => {
   const [name, setName] = useState("");
   const [file, setFile] = useState<File | undefined>();
   const { mutateAsync, isLoading } = useUploadResume();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams()
+  console.log(searchParams.get('jobId'))
 
   const handleSave = async () => {
-    if(!name || !file) return
-    const res = await mutateAsync({ file, name });
+    const jobId = searchParams.get('jobId')
+    if (!name || !file || !jobId) return;
+    const res = await mutateAsync({ file, name, jobId });
     navigate(`/resumes/${res.id}`);
   };
 
@@ -34,7 +37,7 @@ export const ResumeNew = () => {
           onClick={handleSave}
           disabled={isLoading || !name || !file}
         >
-        {isLoading ? 'Uploading...' : 'Upload'}
+          {isLoading ? "Uploading..." : "Upload"}
         </button>
       </div>
     </div>

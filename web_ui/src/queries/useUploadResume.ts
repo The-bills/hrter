@@ -10,8 +10,8 @@ export const useUploadResume = () => {
     return formData;
   };
 
-  const mutation = useMutation<Resume, unknown, { file: Blob, name: string }>(({ file, name }) =>
-    fetch(`${BE_URL}/resumes/`, {
+  const mutation = useMutation<Resume, unknown, { file: Blob, name: string, jobId: string }>(({ file, name, jobId }) =>
+    fetch(`${BE_URL}/resumes/?job_id=${jobId}`, {
       method: "POST",
       body: getBody(file, name),
     }).then((res) => res.json())
