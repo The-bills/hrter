@@ -9,9 +9,9 @@ pub async fn all(db: &Db) -> Vec<Job> {
         .unwrap()
 }
 
-pub async fn one(db: &Db, id: Uuid) -> Option<Job> {
+pub async fn one(id: Uuid) -> Option<Job> {
     sqlx::query_as!(Job, "select * from jobs where id = $1", id)
-        .fetch_one(db)
+        .fetch_one(&crate::get_db_pool().await)
         .await
         .ok()
 }

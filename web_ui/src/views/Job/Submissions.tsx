@@ -7,15 +7,18 @@ import { Submission } from "../../types/submission";
 import { formatDate } from "../../utils/date";
 import { useState } from "react";
 import { useResumeQuery } from "../../queries/useResumeQuery";
+import { useGetRecommended } from "../../queries/useGetRecommended";
+import { useGetRecommendation } from "../../queries/useGetRecommendation";
 
 type Props = {
   jobId?: string;
 };
 export const Submissions = (p: Props) => {
   const [selectedTab, setSelectedTab] = useState(0);
-  const { data: recomendedData } = useSubmissionListQuery(p.jobId);
+  const { data: allData } = useSubmissionListQuery(p.jobId);
+  const {data: recommendedData} = useGetRecommended(p.jobId ?? '')
 
-  const data = recomendedData
+  const data = [allData, recommendedData, allData][selectedTab]
 
   return (
     <div className="rounded-md max-h-full flex flex-col overflow-hidden">
@@ -31,18 +34,19 @@ export const Submissions = (p: Props) => {
           <th>Added</th>
           <th>Status</th>
           </tr>
-      {data?.map((submission) => (
-        <Row {...submission} />
-      ))}
+      {data?.map((submission) => 
+        <Row {...submission} check={selectedTab == 1} />
+      )}
       </table>
     </div>
   );
 };
 
-type RowProps = Submission;
+type RowProps = Submission & {check: boolean};
 
 const Row = (p: RowProps) => {
   const {data} = useResumeQuery(p.resume_id)
+  const {data: recommendation} = useGetRecommendation(p.job_id, p.id, p.check)
   return (
     <tr className="border-b-2 pb-3 p-3">
       <td className="text-base font-semibold pb-1">{data?.name}</td>
@@ -51,6 +55,7 @@ const Row = (p: RowProps) => {
         {formatDate(new Date(p.created_at))}
       </td>
       <td className="text-sm text-slate-700 pb-1">Pending</td>
+      <td className="text-sm text-slate-700 pb-1">{recommendation?.reason}</td>
     </tr>
   );
 };

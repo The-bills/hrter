@@ -1,0 +1,6 @@
+CREATE TABLE recommended (
+    id UUID PRIMARY KEY,
+    submission_id UUID NOT NULL REFERENCES submissions(id),
+    reason TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

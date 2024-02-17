@@ -12,6 +12,10 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { Job } from "./views/Job/Job";
 import { ResumeNew } from "./views/ResumeNew/ResumeNew";
 import { JobList } from "./views/JobList/JobList";
+import { JobResumes } from "./views/JobResumes/JobResumes";
+import { JobRecommended } from "./views/JobRecommended/JobRecommended";
+import { JobGeneral } from "./views/JobGeneral/JobGeneral";
+import { NotFound } from "./views/NotFound/NotFound";
 
 const resumePaths = [
   {
@@ -37,6 +41,18 @@ const jobPaths = [
     path: "/jobs/:jobId",
     element: <Job />,
   },
+  {
+    path: "/jobs/:jobId/general",
+    element: <JobGeneral />,
+  },
+  {
+    path: "/jobs/:jobId/resumes",
+    element: <JobResumes />,
+  },
+  {
+    path: "/jobs/:jobId/recommended",
+    element: <JobRecommended />,
+  },
 ]
 
 const router = createBrowserRouter([
@@ -45,7 +61,11 @@ const router = createBrowserRouter([
     element: <Home />,
   },
   ...resumePaths,
-  ...jobPaths
+  ...jobPaths,
+  {
+    path: "/*",
+    element: <NotFound />,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

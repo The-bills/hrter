@@ -20,6 +20,6 @@ pub async fn get_summary(content: &String) -> Result<String, ()> {
 }
 
 pub async fn generate_summary(db: &Db, id: Uuid) -> Result<Job, ()> {
-    let summary = super::get_summary(db, id).await?;
+    let summary = super::get_summary(id).await?;
     repo::udpate_summary(db, id, Some(summary)).await
 }
