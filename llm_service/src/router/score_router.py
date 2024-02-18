@@ -20,7 +20,6 @@ def summarize_resume():
     TokenCounter().count_tokens(prompt)
     llm_res = llm.complete(prompt).text
     res = set_proper_score_format(llm_res)
-    res.replace("```json", "").replace("```", "")
     return Response(res, mimetype='application/json')
 
 @api.route("/job", methods=['POST'])
@@ -35,5 +34,4 @@ def summarize_job():
     TokenCounter().count_tokens(prompt)
     llm_res = llm.complete(prompt).text
     res = set_proper_score_format(llm_res)
-    res.replace("```json", "").replace("```", "")
     return Response(res, mimetype='application/json')
