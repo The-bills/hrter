@@ -1,6 +1,6 @@
 pytest==7.4.0
 scipy==1.11.1
-llama_index==0.9.21
+llama_index==0.10.5
 jsonpickle==3.0.2
 langchain==0.0.284
 chromadb==0.4.9
@@ -10,4 +10,5 @@ flask==2.0.2
 Werkzeug==2.2.2
 flask_cors==4.0.0
 tiktoken==0.5.1
-langchain_community==0.0.284
+langchain_community==0.0.19
+openai==1.12.0 
