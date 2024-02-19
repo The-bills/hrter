@@ -6,6 +6,7 @@ from llama_index.query_engine import RetrieverQueryEngine
 from llama_index.embeddings import LangchainEmbedding
 from llama_index.schema import Document
 from utils.prompts import *
+from llama_index.vector_stores.types import MetadataFilters, ExactMatchFilter
 from utils.prompts import get_position_summarize_query
 from services.ChromaStore import ChromaStore
 import tiktoken
@@ -54,16 +55,25 @@ class LlamaIndex:
     def get_all(self):
         list = self.chroma.collection.get()
 
-    def match_precise(self, position: str):
+    def _query(self, job_doc_id, query):
+        filter_exact_match = [ExactMatchFilter(key="job_doc_id", value=job_doc_id)]
+        filters = MetadataFilters(filters=filter_exact_match)
         retriever = VectorIndexRetriever(
             index=self.index,
-            similarity_top_k=20
+            similarity_top_k=10,
+            filters=filters
         )
         query_engine = RetrieverQueryEngine(
-            retriever=retriever,
+            retriever=retriever
         )
-        query = get_position_summarize_query(position)
         res = query_engine.query(query)
+        print(res)
+        return res
+
+    def match_precise(self, job_doc_id, position: str):
+        query = get_position_summarize_query(position)
+        res = self._query(job_doc_id, query)
+        print(res)
         return res
 
     def count_embed_tokens_used(self):

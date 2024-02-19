@@ -1,6 +1,6 @@
 import jsonpickle
 from flask import Blueprint, request
-from llama_index.llms import OpenAI
+from llama_index.llms.openai import OpenAI
 import utils.prompts as prompts
 from services.TokenCounter import TokenCounter
 
