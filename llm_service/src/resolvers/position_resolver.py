@@ -1,4 +1,4 @@
-from llama_index.schema import Document
+from llama_index.core.schema import Document
 from services.LlamaIndex import LlamaIndex
 from datetime import datetime
 

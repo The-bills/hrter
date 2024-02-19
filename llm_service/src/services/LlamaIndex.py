@@ -1,17 +1,17 @@
-from llama_index import VectorStoreIndex, ServiceContext
-from llama_index.vector_stores import ChromaVectorStore
-from llama_index.storage.storage_context import StorageContext
+from llama_index.core import VectorStoreIndex, ServiceContext
+from llama_index.vector_stores.chroma import ChromaVectorStore
+from llama_index.core.storage.storage_context import StorageContext
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
-from llama_index.query_engine import RetrieverQueryEngine
-from llama_index.embeddings import LangchainEmbedding
-from llama_index.schema import Document
+from llama_index.core.query_engine import RetrieverQueryEngine
+from llama_index.legacy.embeddings import LangchainEmbedding
+from llama_index.core.schema import Document
 from utils.prompts import *
-from llama_index.vector_stores.types import MetadataFilters, ExactMatchFilter
+from llama_index.core.vector_stores.types import MetadataFilters, ExactMatchFilter
 from utils.prompts import get_position_summarize_query
 from services.ChromaStore import ChromaStore
 import tiktoken
-from llama_index.retrievers import VectorIndexRetriever
-from llama_index.callbacks import CallbackManager, TokenCountingHandler
+from llama_index.core.retrievers import VectorIndexRetriever
+from llama_index.core.callbacks import CallbackManager, TokenCountingHandler
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 

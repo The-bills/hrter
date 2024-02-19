@@ -2,7 +2,7 @@ from flask import Blueprint, request, Response
 import utils.prompts as prompts
 from services.TokenCounter import TokenCounter
 from utils.helpers import set_proper_score_format
-from llama_index.llms.openai import OpenAI 
+from llama_index.legacy.llms.openai import OpenAI 
 
 api = Blueprint('cv_api', __name__)
 llm = OpenAI(model="gpt-4-1106-preview", temperature=0.0, max_tokens=4096, max_retries=5)

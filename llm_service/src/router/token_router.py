@@ -5,8 +5,6 @@ import jsonpickle
 from flask import Blueprint, request, Response
 import utils.prompts as prompts
 import utils.helpers as helpers
-from llama_index.llms import OpenAI
-
 
 api = Blueprint('token_api', __name__)
 
