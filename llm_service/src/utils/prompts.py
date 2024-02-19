@@ -56,7 +56,7 @@ def get_position_summarize_query(text: str):
     return f"""
     Which of the candidates will be the best for the job offer presented below? Match the CV to the job offer, based on the given informations in the position summary and answer the following question:
     Which candidate is the best fit for the given position?
-    Return an array of the names of potential candidates with a short reason why.
+    Return an array of the names of potential candidates with a short reason why along with "doc_id" of the resume.
     Example response:
     ```
     [
