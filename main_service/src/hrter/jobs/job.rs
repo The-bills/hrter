@@ -13,4 +13,5 @@ pub struct Job {
     pub organisation_id: Uuid,
     pub summary: Option<String>,
     pub scores: Option<Value>,
+    pub job_doc_id: Option<Uuid>,
 }

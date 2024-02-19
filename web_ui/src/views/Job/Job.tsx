@@ -5,6 +5,8 @@ import { useJobQuery } from "../../queries/useJobQuery"
 import { formatDate } from "../../utils/date"
 import { Submissions } from "./Submissions"
 import { ScoresTable } from "../../components/ScoresTable"
+import { useGetRecommended } from "../../queries/useGetRecommended"
+import { JobPageWithNavbar } from "../../layouts/JobPageWithNavbar"
 
 export const Job = () => {
     const { jobId } = useParams()
@@ -12,9 +14,8 @@ export const Job = () => {
     const navigate = useNavigate()
 
     const handleNavigateNew = () => navigate(`/resumes/new`)
-
     return(
-        <PageWithNavbar className="flex flex-col max-h-screen">
+        <JobPageWithNavbar className="flex flex-col max-h-screen">
             <div className="bg-slate-100 p-5 mb-8 rounded-md">
                 <h1 className='text-3xl font-bold'>{data?.name}</h1>
                 <div className=''>{formatDate(new Date(data?.created_at!))}</div>
@@ -32,6 +33,6 @@ export const Job = () => {
             </div>
 
             <Submissions jobId={jobId}/>
-        </PageWithNavbar>
+        </JobPageWithNavbar>
     )
 }

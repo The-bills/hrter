@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "select * from jobs where id = $1",
+  "query": "INSERT INTO jobs (id, name, description, organisation_id) VALUES ($1, $2, $3, $4) returning *",
   "describe": {
     "columns": [
       {
@@ -46,6 +46,9 @@
     ],
     "parameters": {
       "Left": [
+        "Uuid",
+        "Varchar",
+        "Text",
         "Uuid"
       ]
     },
@@ -60,5 +63,5 @@
       true
     ]
   },
-  "hash": "c8b8e2868ba81d207354b088d17f0349bc32556c37fc409761538d693ab7083f"
+  "hash": "67d999157091e29ce4d2881785dcfbc7ed4cec399783f59ba210bc4ef8c40040"
 }

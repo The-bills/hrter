@@ -6,25 +6,15 @@ use uuid::Uuid;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct InsertResponse {
-    pub resume_doc_id: Uuid,
-    pub chroma_distance: f64,
+    pub job_doc_id: Uuid,
 }
-pub async fn insert_summary_to_llm(
-    summary: &String,
-    scores: &Value,
-    job_doc_id: &Uuid,
-) -> Result<InsertResponse, Error> {
+pub async fn insert_job_to_llm(summary: &String, scores: &Value) -> Result<InsertResponse, Error> {
     let body = json!({
         "content": summary,
         "scores": scores
     });
     reqwest::Client::new()
-        .post(
-            var("LLM_SERVICE_URL").expect("LLM_SERVICE_URL env not provided")
-                + "/chroma/jobs/"
-                + job_doc_id.to_string().as_str()
-                + "/resume",
-        )
+        .post(var("LLM_SERVICE_URL").expect("LLM_SERVICE_URL env not provided") + "/chroma/jobs")
         .json(&body)
         .send()
         .await

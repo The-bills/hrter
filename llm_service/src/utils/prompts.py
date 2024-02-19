@@ -60,8 +60,8 @@ def get_position_summarize_query(text: str):
     Example response:
     ```
     [
-      {{name: "First Candidate", reason: "Some reason"}},
-      {{name: "Second Candidate", reason: "Some other reason"}},
+      {{"name": "First Candidate", "reason": "Some reason", "doc_id": "some_doc_id"}},
+      {{"name": "Second Candidate", "reason": "Some other reason", "doc_id": "some_other_doc_id"}},
     ]
     ```
 

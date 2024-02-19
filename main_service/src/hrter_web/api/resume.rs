@@ -3,6 +3,7 @@ use crate::processing_queue::{self, ProcessingEvent};
 use actix_multipart::form::{tempfile::TempFile, text::Text, MultipartForm};
 use actix_web::web::Path;
 use actix_web::{get, post, web, HttpResponse, Responder, Scope};
+use serde::Deserialize;
 use uuid::Uuid;
 
 #[get("/")]
@@ -55,8 +56,16 @@ pub struct PostResumeForm {
     name: Text<String>,
 }
 
+#[derive(Debug, Deserialize)]
+pub struct InsertParams {
+    job_id: Uuid,
+}
+
 #[post("/")]
-pub async fn insert(MultipartForm(form): MultipartForm<PostResumeForm>) -> impl Responder {
+pub async fn insert(
+    MultipartForm(form): MultipartForm<PostResumeForm>,
+    params: web::Query<InsertParams>,
+) -> impl Responder {
     const MAX_FILE_SIZE: usize = 1024 * 1024 * 10;
 
     match form.file.size {
@@ -68,13 +77,7 @@ pub async fn insert(MultipartForm(form): MultipartForm<PostResumeForm>) -> impl 
     let temp_file_path = form.file.file.path();
     let txt: String = pdf_extract::extract_text(&temp_file_path).unwrap();
 
-    match resumes::process(
-        txt,
-        Uuid::parse_str("13868a7c-00e9-4e21-960e-5c14b1045d12").unwrap(),
-        form.name.into_inner(),
-    )
-    .await
-    {
+    match resumes::process(txt, params.job_id, form.name.into_inner()).await {
         Ok(res) => HttpResponse::Ok().json(res),
         Err(err) => {
             dbg!(err);
