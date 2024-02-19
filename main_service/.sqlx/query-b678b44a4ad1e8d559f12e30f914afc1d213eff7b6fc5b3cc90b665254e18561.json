@@ -37,6 +37,11 @@
         "ordinal": 6,
         "name": "scores",
         "type_info": "Json"
+      },
+      {
+        "ordinal": 7,
+        "name": "job_doc_id",
+        "type_info": "Uuid"
       }
     ],
     "parameters": {
@@ -48,6 +53,7 @@
       false,
       false,
       false,
+      true,
       true,
       true
     ]

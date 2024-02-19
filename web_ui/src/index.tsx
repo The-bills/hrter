@@ -16,6 +16,7 @@ import { JobResumes } from "./views/JobResumes/JobResumes";
 import { JobRecommended } from "./views/JobRecommended/JobRecommended";
 import { JobGeneral } from "./views/JobGeneral/JobGeneral";
 import { NotFound } from "./views/NotFound/NotFound";
+import { JobNew } from "./views/JobNew/JobNew";
 
 const resumePaths = [
   {
@@ -36,6 +37,10 @@ const jobPaths = [
   {
     path: "/jobs",
     element: <JobList />,
+  },
+  {
+    path: "/jobs/new",
+    element: <JobNew />,
   },
   {
     path: "/jobs/:jobId",

@@ -1,17 +1,16 @@
 use crate::hrter::organisations::repo;
-use crate::hrter_web::{AppState, Data};
 use actix_web::web::Path;
 use actix_web::{get, web, HttpResponse, Responder, Scope};
 use uuid::Uuid;
 
 #[get("/")]
-pub async fn get_all(data: Data<AppState>) -> impl Responder {
-    HttpResponse::Ok().json(repo::all(&data.db).await)
+pub async fn get_all() -> impl Responder {
+    HttpResponse::Ok().json(repo::all().await)
 }
 
 #[get("/{id}")]
-pub async fn get_one(data: Data<AppState>, id: Path<Uuid>) -> impl Responder {
-    HttpResponse::Ok().json(repo::one(&data.db, id.into_inner()).await)
+pub async fn get_one(id: Path<Uuid>) -> impl Responder {
+    HttpResponse::Ok().json(repo::one(id.into_inner()).await)
 }
 
 pub fn service() -> Scope {

@@ -4,7 +4,7 @@ pub mod resume;
 pub mod score;
 pub mod summary;
 
-use super::submissions;
+use super::{jobs, submissions};
 use crate::processing_queue::{self, ProcessingEvent};
 use crate::Error;
 use resume::Resume;
@@ -38,6 +38,10 @@ pub async fn process_scores(id: Uuid) -> Result<Resume, Error> {
 
 pub async fn process(content: String, job_id: Uuid, name: String) -> Result<Resume, Error> {
     let resume = repo::insert(&content, &name).await?;
+    let job_doc_id = jobs::repo::one(job_id)
+        .await
+        .and_then(|j| j.job_doc_id)
+        .ok_or(Error::DbError)?;
 
     tokio::spawn(async move {
         let summary = process_summary(resume.id).await.unwrap().summary.unwrap();
@@ -46,7 +50,9 @@ pub async fn process(content: String, job_id: Uuid, name: String) -> Result<Resu
         let llm::InsertResponse {
             resume_doc_id,
             chroma_distance,
-        } = llm::insert_summary_to_llm(&summary, &scores).await.unwrap();
+        } = llm::insert_summary_to_llm(&summary, &scores, &job_doc_id)
+            .await
+            .unwrap();
         submissions::repo::insert(resume.id, job_id, chroma_distance)
             .await
             .unwrap();

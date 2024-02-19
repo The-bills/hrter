@@ -1,15 +1,29 @@
 use crate::hrter;
 use crate::hrter::jobs::{self, repo};
-use crate::hrter_web::{AppState, Data};
 use actix_web::web::Path;
 use actix_web::{get, post, web, HttpResponse, Responder, Scope};
+use serde::Deserialize;
 use uuid::Uuid;
 
 mod submissions;
 
 #[get("/")]
-pub async fn get_all(data: Data<AppState>) -> impl Responder {
-    HttpResponse::Ok().json(repo::all(&data.db).await)
+pub async fn get_all() -> impl Responder {
+    HttpResponse::Ok().json(repo::all().await)
+}
+
+#[derive(Deserialize)]
+pub struct NewJobBody {
+    name: String,
+    description: String,
+}
+
+#[post("/")]
+pub async fn new(body: web::Json<NewJobBody>) -> impl Responder {
+    match hrter::jobs::new(&body.name, &body.description).await {
+        Ok(job) => HttpResponse::Ok().json(job),
+        Err(_) => HttpResponse::InternalServerError().finish(),
+    }
 }
 
 #[get("/{id}")]
@@ -18,8 +32,8 @@ pub async fn get_one(id: Path<Uuid>) -> impl Responder {
 }
 
 #[post("/{id}/summary")]
-pub async fn generate_summary(data: Data<AppState>, id: Path<Uuid>) -> impl Responder {
-    match jobs::summary::generate_summary(&data.db, id.into_inner()).await {
+pub async fn generate_summary(id: Path<Uuid>) -> impl Responder {
+    match jobs::summary::generate_summary(id.into_inner()).await {
         Ok(job) => HttpResponse::Ok().json(job),
         Err(_) => HttpResponse::InternalServerError().finish(),
     }
@@ -56,4 +70,5 @@ pub fn service() -> Scope {
         .service(get_score)
         .service(get_recommended)
         .service(generate_recommended)
+        .service(new)
 }

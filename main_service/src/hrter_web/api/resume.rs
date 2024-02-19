@@ -58,11 +58,14 @@ pub struct PostResumeForm {
 
 #[derive(Debug, Deserialize)]
 pub struct InsertParams {
-   job_id: Uuid,
+    job_id: Uuid,
 }
 
 #[post("/")]
-pub async fn insert(MultipartForm(form): MultipartForm<PostResumeForm>, params: web::Query<InsertParams>) -> impl Responder {
+pub async fn insert(
+    MultipartForm(form): MultipartForm<PostResumeForm>,
+    params: web::Query<InsertParams>,
+) -> impl Responder {
     const MAX_FILE_SIZE: usize = 1024 * 1024 * 10;
 
     match form.file.size {
@@ -74,13 +77,7 @@ pub async fn insert(MultipartForm(form): MultipartForm<PostResumeForm>, params: 
     let temp_file_path = form.file.file.path();
     let txt: String = pdf_extract::extract_text(&temp_file_path).unwrap();
 
-    match resumes::process(
-        txt,
-        params.job_id,
-        form.name.into_inner(),
-    )
-    .await
-    {
+    match resumes::process(txt, params.job_id, form.name.into_inner()).await {
         Ok(res) => HttpResponse::Ok().json(res),
         Err(err) => {
             dbg!(err);

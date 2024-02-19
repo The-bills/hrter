@@ -18,7 +18,7 @@ pub type Db = hrter_web::Db;
 
 static DB_POOL: OnceLock<Pool<Postgres>> = OnceLock::new();
 async fn get_db_pool() -> Pool<Postgres> {
-    DB_POOL.get().unwrap().clone()
+    DB_POOL.get().expect("Db Error").clone()
 }
 
 #[tokio::main]

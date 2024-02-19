@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "select * from jobs where id = $1",
+  "query": "update jobs set job_doc_id = $1 where id = $2 returning *",
   "describe": {
     "columns": [
       {
@@ -46,6 +46,7 @@
     ],
     "parameters": {
       "Left": [
+        "Uuid",
         "Uuid"
       ]
     },
@@ -60,5 +61,5 @@
       true
     ]
   },
-  "hash": "c8b8e2868ba81d207354b088d17f0349bc32556c37fc409761538d693ab7083f"
+  "hash": "846bb614a3e82dab1bc36a5ec6f65dc94bdc7bfc3f02a01a4d210e12542a6ae0"
 }

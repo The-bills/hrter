@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "select * from submissions where job_id = $1 order by chroma_distance desc",
+  "query": "\n        SELECT s.* from submissions s\n        LEFT JOIN recommended r ON r.submission_id = s.id\n        WHERE r.id is not null and job_id = $1\n        ORDER BY chroma_distance desc\n        ",
   "describe": {
     "columns": [
       {
@@ -42,5 +42,5 @@
       true
     ]
   },
-  "hash": "9c1b58654122a44ff75dbdc85cf85d31073a31c94fa7238936216353484c3c4f"
+  "hash": "fdecac80236bcf3432d8c60f8a85a606cb040435d28dd9776eb711ac2ccd762e"
 }

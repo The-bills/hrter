@@ -1,7 +1,12 @@
-use serde_json::json;
+use serde_json::{json, Value};
 use std::env::var;
+use uuid::Uuid;
 
-pub async fn get_score(content: &String) -> Result<String, ()> {
+use crate::Error;
+
+use super::{repo, Job};
+
+pub async fn get_score(content: &String) -> Result<Value, Error> {
     let body = json!({
         "content": content,
     });
@@ -10,8 +15,13 @@ pub async fn get_score(content: &String) -> Result<String, ()> {
         .json(&body)
         .send()
         .await
-        .map_err(|_| ())?
-        .text()
+        .map_err(|_| Error::LLMServiceError("score_job"))?
+        .json::<Value>()
         .await
-        .map_err(|_| ())
+        .map_err(|_| Error::ParsingError("score_job"))
+}
+
+pub async fn generate_score(id: Uuid) -> Result<Job, Error> {
+    let scores = super::get_score(id).await?;
+    repo::udpate_scores(id, Some(scores)).await
 }
