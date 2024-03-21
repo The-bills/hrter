@@ -1,8 +1,9 @@
 import jsonpickle
-from flask import Blueprint, request, Response
+from flask import Blueprint, request, Response, jsonify
 from llama_index.llms.openai import OpenAI
 from services.LlamaIndex import LlamaIndex
 from services.ChromaStore import ChromaStore
+from services.TokenCounter import TokenCounter
 from resolvers.position_resolver import chroma_insert
 
 
@@ -22,12 +23,18 @@ def insert_resume(job_doc_id):
                             content=content,
                             type="cv",
                             job_doc_id=job_doc_id)
-        print(doc)
         resume_doc_id = doc.doc_id
         job_offer = ChromaStore().collection.get(where={'doc_id': job_doc_id}, include=['embeddings'])['embeddings'][0]
         res = ChromaStore().query_collection(embeddings=job_offer, where={"doc_id": resume_doc_id})
+        tokens = TokenCounter().count_tokens()
         chroma_distance = res['distances'][0][0]
-        return jsonpickle.encode({"resume_doc_id": resume_doc_id, "chroma_distance": chroma_distance}, unpicklable=False)
+        response_data = {
+            "resume_doc_id": resume_doc_id,
+            "chroma_distance": chroma_distance,
+            "tokens": tokens
+        }
+        return jsonify(response_data)
+        # return jsonpickle.encode({"resume_doc_id": resume_doc_id, "chroma_distance": chroma_distance}, unpicklable=False)
         
 
 @api.route("/jobs", methods=['POST'])
@@ -41,12 +48,22 @@ def insert_job():
         doc = chroma_insert(type="job_offer",
                             score_dict=scores,
                             content=content)
+        tokens = TokenCounter().count_tokens()
         res = doc.doc_id
-        return jsonpickle.encode({"job_doc_id": res}, unpicklable=False)
+        response_data = {
+            "job_doc_id": res,
+            "tokens": tokens
+        }
+        return jsonify(response_data)
     
 @api.route("/jobs/<job_doc_id>/match_precise", methods=['GET'])
 def match_precise(job_doc_id):
     position = ChromaStore().collection.get(where={'doc_id': job_doc_id}, include=['documents'])
     job_offer = position['documents'][0]
     res = LlamaIndex().match_precise(job_doc_id, job_offer).response
-    return Response(res, mimetype='application/json')
+    tokens = TokenCounter().count_tokens()
+    response_data = {
+        "matches": jsonpickle.decode(res),
+        "tokens": tokens
+    }
+    return jsonify(response_data)

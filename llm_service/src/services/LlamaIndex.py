@@ -10,6 +10,7 @@ from llama_index.core.vector_stores.types import MetadataFilters, ExactMatchFilt
 from utils.prompts import get_position_summarize_query
 from services.ChromaStore import ChromaStore
 import tiktoken
+import jsonpickle
 from llama_index.core.retrievers import VectorIndexRetriever
 from llama_index.core.callbacks import CallbackManager, TokenCountingHandler
 from dotenv import load_dotenv, find_dotenv
@@ -67,13 +68,11 @@ class LlamaIndex:
             retriever=retriever
         )
         res = query_engine.query(query)
-        print(res)
         return res
 
     def match_precise(self, job_doc_id, position: str):
         query = get_position_summarize_query(position)
         res = self._query(job_doc_id, query)
-        print(res)
         return res
 
     def count_embed_tokens_used(self):

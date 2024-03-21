@@ -1,5 +1,5 @@
 import jsonpickle
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from llama_index.legacy.llms.openai import OpenAI
 import utils.prompts as prompts
 from services.TokenCounter import TokenCounter
@@ -16,9 +16,13 @@ def summarize_resume():
     if(json['content'] is None):
         return 'Invalid body'
     prompt = prompts.summarize_cv_prompt(json['content'])
-    TokenCounter().count_tokens(prompt)
-    res = llm.complete(prompt).text
-    return jsonpickle.encode(res, unpicklable=False)
+    tokens = TokenCounter().count_tokens(prompt)
+    res_raw = llm.complete(prompt).text
+    response_data = {
+        "summary": res_raw,
+        "tokens": tokens
+    }
+    return jsonify(response_data)
 
 @api.route("/job", methods=['POST'])
 def summarize_job():
@@ -29,6 +33,10 @@ def summarize_job():
     if(json["content"] is None):
         return 'Invalid body'
     prompt = prompts.summarize_position_prompt(json["content"])
-    TokenCounter().count_tokens(prompt)
-    res = llm.complete(prompt).text
-    return jsonpickle.encode(res, unpicklable=False)
+    tokens = TokenCounter().count_tokens(prompt)
+    res_raw = llm.complete(prompt).text
+    response_data = {
+        "summary": res_raw,
+        "tokens": tokens
+    }
+    return jsonify(response_data)

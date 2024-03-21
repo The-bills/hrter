@@ -1,4 +1,4 @@
-from flask import Blueprint, request, Response
+from flask import Blueprint, request, jsonify
 import utils.prompts as prompts
 from services.TokenCounter import TokenCounter
 from utils.helpers import set_proper_score_format
@@ -16,10 +16,15 @@ def summarize_resume():
     if(json['content'] is None):
         return 'Invalid body'
     prompt = prompts.score_cv_prompt(json['content'])
-    TokenCounter().count_tokens(prompt)
+    tokens = TokenCounter().count_tokens(prompt)
     llm_res = llm.complete(prompt).text
-    res = set_proper_score_format(llm_res)
-    return Response(res, mimetype='application/json')
+    res_raw = set_proper_score_format(llm_res)
+    response_data = {
+        "scores": res_raw,
+        "tokens": tokens
+    }
+    return jsonify(response_data)
+    
 
 @api.route("/job", methods=['POST'])
 def summarize_job():
@@ -30,7 +35,11 @@ def summarize_job():
     if(json["content"] is None):
         return 'Invalid body'
     prompt = prompts.score_position_prompt(json["content"])
-    TokenCounter().count_tokens(prompt)
+    tokens = TokenCounter().count_tokens(prompt)
     llm_res = llm.complete(prompt).text
-    res = set_proper_score_format(llm_res)
-    return Response(res, mimetype='application/json')
+    res_raw = set_proper_score_format(llm_res)
+    response_data = {
+        "scores": res_raw,
+        "tokens": tokens
+    }
+    return jsonify(response_data)
