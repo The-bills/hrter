@@ -1,12 +1,17 @@
+use serde::Deserialize;
+use serde::Serialize;
 use serde_json::json;
 use serde_json::Value;
 use std::env::var;
 
 use crate::Error;
 
-type ScoreResponse = Value;
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Response {
+    pub scores: Value
+}
 
-pub async fn get_score(content: &String) -> Result<ScoreResponse, Error> {
+pub async fn get_score(content: &String) -> Result<Value, Error> {
     let body = json!({
         "content": content,
     });
@@ -16,7 +21,8 @@ pub async fn get_score(content: &String) -> Result<ScoreResponse, Error> {
         .send()
         .await
         .map_err(|_| Error::LLMServiceError("score_resume"))?
-        .json::<ScoreResponse>()
+        .json::<Response>()
         .await
+        .map(|res| res.scores)
         .map_err(|_| Error::ParsingError("score_resume"))
 }

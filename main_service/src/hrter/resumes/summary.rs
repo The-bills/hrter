@@ -1,6 +1,12 @@
 use crate::Error;
+use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::env::var;
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct SummaryResponse {
+    pub summary: String
+}
 
 pub async fn get_summary(content: &String) -> Result<String, Error> {
     let body = json!({
@@ -14,7 +20,8 @@ pub async fn get_summary(content: &String) -> Result<String, Error> {
         .send()
         .await
         .map_err(|_| Error::LLMServiceError("summarize_resume"))?
-        .text()
+        .json::<SummaryResponse>()
         .await
         .map_err(|_| Error::ParsingError("summarize_resume"))
+        .map(|res| res.summary)
 }

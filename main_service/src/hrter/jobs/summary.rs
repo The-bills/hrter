@@ -1,8 +1,14 @@
 use super::{repo, Job};
 use crate::Error;
+use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::env::var;
 use uuid::Uuid;
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Response {
+    pub summary: String
+}
 
 pub async fn get_summary(content: &String) -> Result<String, Error> {
     let body = json!({
@@ -14,8 +20,9 @@ pub async fn get_summary(content: &String) -> Result<String, Error> {
         .send()
         .await
         .map_err(|_| Error::LLMServiceError("summary_job"))?
-        .text()
+        .json::<Response>()
         .await
+        .map(|res| res.summary)
         .map_err(|_| Error::ParsingError("summary_job"))
 }
 

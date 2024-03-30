@@ -8,14 +8,20 @@ use serde::{Deserialize, Serialize};
 use std::env::var;
 use uuid::Uuid;
 
+
 #[derive(Serialize, Deserialize, Debug)]
-pub struct RecommendedResponse {
+pub struct Recommendation {
     pub doc_id: String,
     pub name: String,
     pub reason: String,
 }
 
-pub async fn get_recommended(job_doc_id: &Uuid) -> Result<Vec<RecommendedResponse>, Error> {
+#[derive(Serialize, Deserialize, Debug)]
+pub struct RecommendedResponse {
+    pub matches: Vec<Recommendation>
+}
+
+pub async fn get_recommended(job_doc_id: &Uuid) -> Result<Vec<Recommendation>, Error> {
     let t1 = reqwest::Client::new()
         .get(
             var("LLM_SERVICE_URL").expect("LLM_SERVICE_URL env not provided")
@@ -27,10 +33,11 @@ pub async fn get_recommended(job_doc_id: &Uuid) -> Result<Vec<RecommendedRespons
         .await
         .map_err(|_| Error::LLMServiceError("match_precise"))?;
 
-    t1.json::<Vec<RecommendedResponse>>().await.map_err(|err| {
+    t1.json::<RecommendedResponse>().await.map_err(|err| {
         dbg!(err);
         Error::ParsingError("match_precise")
     })
+    .map(|res| res.matches)
 }
 
 pub async fn generate_recommended(job_id: Uuid) -> Result<(), Error> {
@@ -42,7 +49,7 @@ pub async fn generate_recommended(job_id: Uuid) -> Result<(), Error> {
     let temp = recommended
         .iter()
         .map(
-            |RecommendedResponse {
+            |Recommendation {
                  name,
                  doc_id: _,
                  reason,

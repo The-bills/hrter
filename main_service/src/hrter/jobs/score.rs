@@ -1,3 +1,4 @@
+use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::env::var;
 use uuid::Uuid;
@@ -5,6 +6,12 @@ use uuid::Uuid;
 use crate::Error;
 
 use super::{repo, Job};
+
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Response {
+    pub scores: Value
+}
 
 pub async fn get_score(content: &String) -> Result<Value, Error> {
     let body = json!({
@@ -16,8 +23,9 @@ pub async fn get_score(content: &String) -> Result<Value, Error> {
         .send()
         .await
         .map_err(|_| Error::LLMServiceError("score_job"))?
-        .json::<Value>()
+        .json::<Response>()
         .await
+        .map(|res| res.scores)
         .map_err(|_| Error::ParsingError("score_job"))
 }
 
