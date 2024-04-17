@@ -40,13 +40,14 @@ type RowProps = Submission;
 const Row = (p: RowProps) => {
   const { data } = useResumeQuery(p.resume_id);
   const tdStyles = "py-2 px-4";
+  const navigate = useNavigate()
 
   return (
     <tr className="border-b text-base">
       <td className={tdStyles}>
         <input type="checkbox" className="h-4 w-4" />
       </td>
-      <td className={tdStyles}>{data?.name}</td>
+      <td className={tdStyles}><span className='cursor-pointer' onClick={()=>navigate(`/resumes/${data?.id}`)}>{data?.name}</span></td>
       <td className={tdStyles}>{(100 - 10 * p.chroma_distance).toFixed(1)}</td>
       <td className={tdStyles}>{formatDate(new Date(p.created_at))}</td>
       <td className={tdStyles}>Active</td>

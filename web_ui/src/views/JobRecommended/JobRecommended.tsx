@@ -54,13 +54,16 @@ const Row = (p: RowProps) => {
   const { data: resume } = useResumeQuery(p.resume_id);
   const { data: recommendation } = useGetRecommendation(p.job_id, p.id, true);
   const tdStyles = "py-2 px-4";
+  const navigate = useNavigate()
 
   return (
     <tr className="border-b text-base">
       <td className={tdStyles}>
         <input type="checkbox" className="h-4 w-4" />
       </td>
-      <td className={tdStyles}>{resume?.name}</td>
+      <td className={tdStyles}>
+      <span className="cursor-pointer" onClick={()=>navigate(`/resumes/${resume?.id}`)}>{resume?.name}</span>
+      </td>
       <td className={tdStyles}>{recommendation?.reason}</td>
     </tr>
   );
